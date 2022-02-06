@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { concat, fromEvent, interval, merge, Observable, of, zip } from 'rxjs';
-import { map, catchError, filter, mergeMap, switchMap, switchAll, mergeAll, concatAll } from 'rxjs/operators'
+import { map, catchError, filter, mergeMap, switchMap, switchAll, mergeAll, concatAll, tap } from 'rxjs/operators'
 
 @Component({
   selector: 'app-root',
@@ -21,11 +21,12 @@ export class AppComponent implements AfterViewInit {
     this.eventObservable$ = fromEvent(this.fireButton.nativeElement, 'click').pipe(
       map(e => letters[counter++])
     );  
+
   }
 
   start(): void{
     this.observable$.pipe(
-    //  catchError(e => `Error: ${e}`)
+      // catchError(e => of(`Error: ${e}`))
     ).subscribe(
       n => this.output =`${this.output} ${n}`
     )
