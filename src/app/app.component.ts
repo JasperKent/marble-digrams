@@ -19,14 +19,20 @@ export class AppComponent implements AfterViewInit {
     const letters = "ABCDEFGHIJKLMNOPQRSTUVQWXYZ";
 
     this.eventObservable$ = fromEvent(this.fireButton.nativeElement, 'click').pipe(
-      map(e => letters[counter++])
+      map(e => letters[counter++]),
+      tap(l => {if (l === 'E') throw 'Eek!'})
     );  
 
+    let obsOfObs$ = this.eventObservable$.pipe(
+      map(l => interval(500).pipe(map(n => `${l}${n}`)))
+    )
+
+    this.observable$ = obsOfObs$.pipe(switchAll());
   }
 
   start(): void{
     this.observable$.pipe(
-      // catchError(e => of(`Error: ${e}`))
+       catchError(e => of(`Error: ${e}`))
     ).subscribe(
       n => this.output =`${this.output} ${n}`
     )
